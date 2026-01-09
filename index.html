@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Confesión de Amor</title>
+
+<style>
+html,body{
+  margin:0;
+  padding:0;
+  overflow:hidden;
+  background:black;
+  font-family: Arial, sans-serif;
+}
+
+canvas{
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:0;
+}
+
+#inicio{
+  position:fixed;
+  inset:0;
+  background:black;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-size:22px;
+  z-index:5;
+}
+
+#contenedor{
+  position:relative;
+  z-index:2;
+  width:100%;
+  height:100vh;
+  display:none;
+}
+
+.texto{
+  position:absolute;
+  top:18%;
+  left:50%;
+  transform:translateX(-50%);
+  color:white;
+  font-size:22px;
+  text-align:center;
+  max-width:85%;
+  opacity:0;
+  animation: fade 6s forwards;
+}
+
+@keyframes fade{
+  0%{opacity:0;}
+  20%{opacity:1;}
+  80%{opacity:1;}
+  100%{opacity:0;}
+}
+
+#foto{
+  position:absolute;
+  bottom:6%;
+  left:50%;
+  transform:translateX(-50%);
+  width:200px;
+  height:200px;
+  background:url("ella.jpg") center/cover no-repeat;
+  border-radius:50%;
+  box-shadow:0 0 40px rgba(255,255,255,0.6);
+}
+</style>
+</head>
+
+<body>
+
+<div id="inicio">Toca la pantalla 💫</div>
+
+<audio id="musica" src="musica.mp3" loop></audio>
+
+<canvas id="c"></canvas>
+
+<div id="contenedor">
+  <div id="foto"></div>
+</div>
+
+<script>
+/* GALAXIA */
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
+let w,h;
+
+function resize(){
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize",resize);
+
+let estrellas=[];
+for(let i=0;i<500;i++){
+  estrellas.push({
+    x:Math.random()*w,
+    y:Math.random()*h,
+    r:Math.random()*1.5,
+    v:Math.random()*0.6+0.2
+  });
+}
+
+function animar(){
+  ctx.fillStyle="black";
+  ctx.fillRect(0,0,w,h);
+  ctx.fillStyle="white";
+  estrellas.forEach(e=>{
+    ctx.beginPath();
+    ctx.arc(e.x,e.y,e.r,0,Math.PI*2);
+    ctx.fill();
+    e.y+=e.v;
+    if(e.y>h) e.y=0;
+  });
+  requestAnimationFrame(animar);
+}
+animar();
+
+/* FRASES – SIGNIFICADO DE “CONFESANDO MI AMOR” */
+const frases = [
+"Me enamoré sin buscarlo.",
+"No planeaba sentir esto… simplemente pasó.",
+"Cada vez que te veo, algo dentro de mí cambia.",
+"No sé fingir cuando se trata de ti.",
+"Mi sonrisa tiene tu nombre.",
+"Pensarte se volvió costumbre.",
+"No fue un error, fue amor.",
+"Si me preguntas cuándo empezó, no lo sé.",
+"Solo sé que pasó contigo.",
+"Mi corazón habla cuando estás cerca.",
+"No quiero esconder lo que siento.",
+"Esto que siento no es casualidad.",
+"Me gustas más de lo que debería.",
+"Si me quedo callado, igual se nota.",
+"No es un secreto, es una confesión.",
+"Me enamoré… y no me arrepiento.",
+"Eres lo que no sabía que buscaba.",
+"Hoy lo digo sin miedo.",
+"Esto soy yo, confesando mi amor.",
+"Y si me vuelvo a enamorar, será de ti."
+];
+
+let i=0;
+function mostrarFrase(){
+  if(i>=frases.length) i=0;
+  const t=document.createElement("div");
+  t.className="texto";
+  t.innerHTML=frases[i];
+  document.getElementById("contenedor").appendChild(t);
+  setTimeout(()=>t.remove(),6000);
+  i++;
+}
+
+/* INICIO */
+document.getElementById("inicio").addEventListener("click",()=>{
+  document.getElementById("inicio").style.display="none";
+  document.getElementById("contenedor").style.display="block";
+  document.getElementById("musica").play();
+  mostrarFrase();
+  setInterval(mostrarFrase,6500);
+},{once:true});
+</script>
+
+</body>
+</html>
