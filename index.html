@@ -2,21 +2,21 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Confesi√≥n de Amor</title>
+<title>Galaxia del Amor</title>
 
 <style>
 html,body{
   margin:0;
   padding:0;
-  overflow:hidden;
   background:black;
-  font-family: Arial, sans-serif;
+  overflow:hidden;
+  font-family: 'Georgia', serif;
+  color:#ffe6ff;
 }
 
 canvas{
   position:fixed;
-  top:0;
-  left:0;
+  inset:0;
   z-index:0;
 }
 
@@ -24,150 +24,185 @@ canvas{
   position:fixed;
   inset:0;
   background:black;
-  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:5;
+  cursor:pointer;
+}
+
+#inicio h1{
+  color:#fff;
+  text-align:center;
+  font-size:26px;
+  animation: latido 2s infinite;
+}
+
+@keyframes latido{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.05)}
+}
+
+#contenedor{
+  position:absolute;
+  inset:0;
   display:flex;
   align-items:center;
   justify-content:center;
   text-align:center;
-  font-size:22px;
-  z-index:5;
-}
-
-#contenedor{
-  position:relative;
+  padding:20px;
   z-index:2;
-  width:100%;
-  height:100vh;
-  display:none;
 }
 
-.texto{
-  position:absolute;
-  top:18%;
-  left:50%;
-  transform:translateX(-50%);
-  color:white;
+#texto{
   font-size:22px;
-  text-align:center;
-  max-width:85%;
+  line-height:1.8;
+  max-width:850px;
   opacity:0;
-  animation: fade 6s forwards;
+  transition:opacity 2s;
 }
 
-@keyframes fade{
-  0%{opacity:0;}
-  20%{opacity:1;}
-  80%{opacity:1;}
-  100%{opacity:0;}
-}
-
-#foto{
-  position:absolute;
-  bottom:6%;
-  left:50%;
-  transform:translateX(-50%);
-  width:200px;
-  height:200px;
-  background:url("ella.jpg") center/cover no-repeat;
-  border-radius:50%;
-  box-shadow:0 0 40px rgba(255,255,255,0.6);
+img{
+  max-width:300px;
+  border-radius:20px;
+  margin-top:25px;
+  box-shadow:0 0 30px rgba(255,180,255,0.7);
 }
 </style>
 </head>
 
 <body>
 
-<div id="inicio">Toca la pantalla üí´</div>
-
-<audio id="musica" src="musica.mp3" loop></audio>
-
-<canvas id="c"></canvas>
-
-<div id="contenedor">
-  <div id="foto"></div>
+<div id="inicio">
+  <h1> Toca la pantalla<br>para comenzar la historia </h1>
 </div>
 
+<canvas id="estrellas"></canvas>
+
+<div id="contenedor">
+  <div id="texto"></div>
+</div>
+
+<audio id="musica">
+  <source src="Musica.mp3" type="audio/mpeg">
+</audio>
+
 <script>
-/* GALAXIA */
-const canvas = document.getElementById("c");
-const ctx = canvas.getContext("2d");
-let w,h;
-
+// ===== ESTRELLAS =====
+const c = document.getElementById("estrellas");
+const ctx = c.getContext("2d");
 function resize(){
-  w = canvas.width = window.innerWidth;
-  h = canvas.height = window.innerHeight;
+  c.width = innerWidth;
+  c.height = innerHeight;
 }
-resize();
-window.addEventListener("resize",resize);
+resize(); addEventListener("resize",resize);
 
-let estrellas=[];
-for(let i=0;i<500;i++){
-  estrellas.push({
-    x:Math.random()*w,
-    y:Math.random()*h,
+let stars=[];
+for(let i=0;i<400;i++){
+  stars.push({
+    x:Math.random()*c.width,
+    y:Math.random()*c.height,
     r:Math.random()*1.5,
-    v:Math.random()*0.6+0.2
+    s:Math.random()*0.4+0.1
   });
 }
 
-function animar(){
-  ctx.fillStyle="black";
-  ctx.fillRect(0,0,w,h);
+function draw(){
+  ctx.clearRect(0,0,c.width,c.height);
   ctx.fillStyle="white";
-  estrellas.forEach(e=>{
+  stars.forEach(s=>{
+    s.y+=s.s;
+    if(s.y>c.height) s.y=0;
     ctx.beginPath();
-    ctx.arc(e.x,e.y,e.r,0,Math.PI*2);
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
     ctx.fill();
-    e.y+=e.v;
-    if(e.y>h) e.y=0;
   });
-  requestAnimationFrame(animar);
+  requestAnimationFrame(draw);
 }
-animar();
+draw();
 
-/* FRASES ‚Äì SIGNIFICADO DE ‚ÄúCONFESANDO MI AMOR‚Äù */
-const frases = [
-"Me enamor√© sin buscarlo.",
-"No planeaba sentir esto‚Ä¶ simplemente pas√≥.",
-"Cada vez que te veo, algo dentro de m√≠ cambia.",
-"No s√© fingir cuando se trata de ti.",
-"Mi sonrisa tiene tu nombre.",
-"Pensarte se volvi√≥ costumbre.",
-"No fue un error, fue amor.",
-"Si me preguntas cu√°ndo empez√≥, no lo s√©.",
-"Solo s√© que pas√≥ contigo.",
-"Mi coraz√≥n habla cuando est√°s cerca.",
-"No quiero esconder lo que siento.",
-"Esto que siento no es casualidad.",
-"Me gustas m√°s de lo que deber√≠a.",
-"Si me quedo callado, igual se nota.",
-"No es un secreto, es una confesi√≥n.",
-"Me enamor√©‚Ä¶ y no me arrepiento.",
-"Eres lo que no sab√≠a que buscaba.",
-"Hoy lo digo sin miedo.",
-"Esto soy yo, confesando mi amor.",
-"Y si me vuelvo a enamorar, ser√° de ti."
+// ===== HISTORIA =====
+const escenas = [
+` <b>El Chico de la Guitarra</b><br><br>
+Antes de creer en el amor,
+mi vida estaba llena de silencio.
+HabÌa m˙sica, sÌÖ
+pero faltaba algo.`,
+
+` Pasaba los dÌas tocando mi guitarra,
+dejando que las notas
+dijeran lo que yo no sabÌa expresar.`,
+
+` No buscaba a nadie.
+No esperaba nada.
+Hasta que el destino decidiÛ intervenir.`,
+
+` Un dÌa entrÈ a una isla,
+en un juego cualquiera.
+Y sin saberlo,
+ahÌ comenzarÌa mi historia.`,
+
+` <b>Ella</b><br><br>
+Desde el primer momento,
+sentÌ una conexiÛn distinta.
+Como si ya nos conociÈramos.`,
+
+`CoincidÌamos en lo simple,
+en lo pequeÒo,
+en lo importante:
+los gustos, los colores,
+las risas.`,
+
+` Poco a poco,
+mi corazÛn empezÛ a elegirte
+sin que yo se lo pidiera.`,
+
+`Porque cuando llegaste t˙,
+todo cambiÛ.
+Todo cobrÛ sentido.`,
+
+`<img src="ella.jpg"><br>
+AhÌ entendÌ que no era casualidad,
+era destino.`,
+
+`<img src="mujer.jpg"><br>
+No solo me enamorÈ de ti,
+me sentÌ en casa.`,
+
+`<img src="foto.jpg"><br>
+Y hoy, con el corazÛn en la mano,
+solo quiero preguntarte algo:`,
+
+` øQuieres seguir
+escribiendo esta historia
+conmigo? `
 ];
 
 let i=0;
-function mostrarFrase(){
-  if(i>=frases.length) i=0;
-  const t=document.createElement("div");
-  t.className="texto";
-  t.innerHTML=frases[i];
-  document.getElementById("contenedor").appendChild(t);
-  setTimeout(()=>t.remove(),6000);
-  i++;
+const texto=document.getElementById("texto");
+
+function mostrar(){
+  texto.style.opacity=0;
+  setTimeout(()=>{
+    texto.innerHTML=escenas[i];
+    texto.style.opacity=1;
+    i++;
+    if(i<escenas.length){
+      setTimeout(mostrar, 8500);
+    }
+  },2000);
 }
 
-/* INICIO */
-document.getElementById("inicio").addEventListener("click",()=>{
-  document.getElementById("inicio").style.display="none";
-  document.getElementById("contenedor").style.display="block";
-  document.getElementById("musica").play();
-  mostrarFrase();
-  setInterval(mostrarFrase,6500);
-},{once:true});
+// ===== INICIO CON M⁄SICA =====
+const inicio=document.getElementById("inicio");
+const musica=document.getElementById("musica");
+
+inicio.addEventListener("click",()=>{
+  inicio.style.display="none";
+  musica.volume=0.6;
+  musica.play();
+  mostrar();
+});
 </script>
 
 </body>
